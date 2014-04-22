@@ -56,9 +56,9 @@ struct square
 	square( );
 	explicit square( size_t num );
 };
-struct game_2048
+struct core_2048
 {
-	game_2048( ) { }
+	core_2048( ) { }
 	std::array< std::array< square, 4 >, 4 > data;
 	typedef decltype
 	(
@@ -221,6 +221,6 @@ struct game_2048
 	bool can_move( ) const;
 	bool can_move( direction dir ) const;
 	template< typename O >
-	friend O & operator << ( O & o, const game_2048 & s );
+	friend O & operator << ( O & o, const core_2048 & s );
 };
 #endif // CORE_2048_HPP

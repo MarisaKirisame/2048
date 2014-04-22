@@ -129,7 +129,7 @@ square::square() : square( 0 ) { }
 
 square::square(size_t num) : num( num ) { }
 
-game_2048::range_type game_2048::range( )
+core_2048::range_type core_2048::range( )
 {
 	return
 		boost::range::join
@@ -148,7 +148,7 @@ game_2048::range_type game_2048::range( )
 }
 
 
-game_2048::crange_type game_2048::crange( ) const
+core_2048::crange_type core_2048::crange( ) const
 {
 	return
 		boost::range::join
@@ -166,15 +166,15 @@ game_2048::crange_type game_2048::crange( ) const
 		);
 }
 
-game_2048::iterator game_2048::begin() { return range( ).begin( ); }
+core_2048::iterator core_2048::begin() { return range( ).begin( ); }
 
-game_2048::iterator game_2048::end() { return range( ).end( ); }
+core_2048::iterator core_2048::end() { return range( ).end( ); }
 
-game_2048::reverse_iterator game_2048::rbegin() { return boost::rbegin( range( ) ); }
+core_2048::reverse_iterator core_2048::rbegin() { return boost::rbegin( range( ) ); }
 
-game_2048::reverse_iterator game_2048::rend() { return boost::rend( range( ) ); }
+core_2048::reverse_iterator core_2048::rend() { return boost::rend( range( ) ); }
 
-void game_2048::random_add()
+void core_2048::random_add()
 {
 	auto pred = []( square & s ){ return s.empty( ); };
 	auto i_begin = boost::make_filter_iterator( pred, begin( ), end( ) );
@@ -191,7 +191,7 @@ void game_2048::random_add()
 	}
 }
 
-game_2048::cleft_to_right_type game_2048::left_to_right() const
+core_2048::cleft_to_right_type core_2048::left_to_right() const
 {
 	cleft_to_right_type ret;
 	std::transform
@@ -204,7 +204,7 @@ game_2048::cleft_to_right_type game_2048::left_to_right() const
 	return ret;
 }
 
-game_2048::cright_to_left_type game_2048::right_to_left() const
+core_2048::cright_to_left_type core_2048::right_to_left() const
 {
 	cright_to_left_type ret;
 	std::transform
@@ -217,7 +217,7 @@ game_2048::cright_to_left_type game_2048::right_to_left() const
 	return ret;
 }
 
-game_2048::cup_to_down_type game_2048::up_to_down() const
+core_2048::cup_to_down_type core_2048::up_to_down() const
 {
 	cup_to_down_type ret;
 	skipping_iterator< iterator, 4 >::split
@@ -234,7 +234,7 @@ game_2048::cup_to_down_type game_2048::up_to_down() const
 	return ret;
 }
 
-game_2048::cdown_to_up_type game_2048::down_to_up() const
+core_2048::cdown_to_up_type core_2048::down_to_up() const
 {
 	cdown_to_up_type ret;
 	skipping_iterator< iterator, 4 >::split
@@ -251,7 +251,7 @@ game_2048::cdown_to_up_type game_2048::down_to_up() const
 	return ret;
 }
 
-void game_2048::move(game_2048::direction dir, bool add_new)
+void core_2048::move(core_2048::direction dir, bool add_new)
 {
 	if ( dir == left )
 	{
@@ -289,9 +289,9 @@ void game_2048::move(game_2048::direction dir, bool add_new)
 	if ( add_new ) { random_add( ); }
 }
 
-bool game_2048::can_move() const { return can_move( up ) || can_move( down ) || can_move( left ) || can_move( right ); }
+bool core_2048::can_move() const { return can_move( up ) || can_move( down ) || can_move( left ) || can_move( right ); }
 
-bool game_2048::can_move(game_2048::direction dir) const
+bool core_2048::can_move(core_2048::direction dir) const
 {
 	if ( dir == left )
 	{
@@ -328,7 +328,7 @@ bool game_2048::can_move(game_2048::direction dir) const
 	}
 }
 template< typename O >
-O & operator <<(O & o, const game_2048 & s)
+O & operator <<(O & o, const core_2048 & s)
 {
 	o
 			<< s.data[0][0] <<  "|" << s.data[0][1] << "|" << s.data[0][2] << "|" << s.data[0][3] << std::endl
@@ -337,7 +337,7 @@ O & operator <<(O & o, const game_2048 & s)
 	return o;
 }
 
-game_2048::down_to_up_type game_2048::down_to_up()
+core_2048::down_to_up_type core_2048::down_to_up()
 {
 	down_to_up_type ret;
 	skipping_iterator< iterator, 4 >::split
@@ -354,7 +354,7 @@ game_2048::down_to_up_type game_2048::down_to_up()
 	return ret;
 }
 
-game_2048::up_to_down_type game_2048::up_to_down()
+core_2048::up_to_down_type core_2048::up_to_down()
 {
 	up_to_down_type ret;
 	skipping_iterator< iterator, 4 >::split
@@ -371,7 +371,7 @@ game_2048::up_to_down_type game_2048::up_to_down()
 	return ret;
 }
 
-game_2048::right_to_left_type game_2048::right_to_left()
+core_2048::right_to_left_type core_2048::right_to_left()
 {
 	right_to_left_type ret;
 	std::transform
@@ -384,7 +384,7 @@ game_2048::right_to_left_type game_2048::right_to_left()
 	return ret;
 }
 
-game_2048::left_to_right_type game_2048::left_to_right()
+core_2048::left_to_right_type core_2048::left_to_right()
 {
 	left_to_right_type ret;
 	std::transform
