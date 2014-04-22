@@ -187,7 +187,7 @@ void core_2048::random_add()
 	{
 		if ( std::uniform_real_distribution<>( )( rd ) <= 1 / static_cast< double >( distance ) )
 		{
-			*i_begin = square( 1 );
+			*i_begin = square( std::uniform_int_distribution<>(1,2)( rd ) );
 			break;
 		}
 		--distance;
