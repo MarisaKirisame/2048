@@ -89,8 +89,9 @@ bool square::can_merge(iterator begin, iterator end)
 	}
 }
 template< typename iiterator, typename oiterator >
-void square::merge(iiterator ibegin, iiterator iend, oiterator obegin)
+size_t square::merge(iiterator ibegin, iiterator iend, oiterator obegin)
 {
+	size_t retu = 0;
 	if ( ibegin == iend ) { }
 	if ( std::distance( ibegin, iend ) == 1 ) { *obegin = *ibegin; }
 	else
@@ -112,6 +113,7 @@ void square::merge(iiterator ibegin, iiterator iend, oiterator obegin)
 			{
 				tem.pop_back( );
 				++s;
+				retu += s;
 			}
 			ret.push_back( std::move( s ) );
 		}
@@ -122,6 +124,7 @@ void square::merge(iiterator ibegin, iiterator iend, oiterator obegin)
 							 []( size_t ){ return square( ); } );
 		std::copy( ret.rbegin( ), ret.rend( ), obegin );
 	}
+	return retu;
 }
 
 square::square() : square( 0 ) { }
@@ -253,13 +256,14 @@ core_2048::cdown_to_up_type core_2048::down_to_up() const
 
 void core_2048::move(core_2048::direction dir, bool add_new)
 {
+	size_t ret = 0;
 	if ( dir == left )
 	{
 		auto d = right_to_left( );
 		std::for_each(
 					d.begin( ),
 					d.end( ),
-					[]( decltype( d[0] ) data ){ square::merge( data.first, data.second, data.first ); } );
+					[&]( decltype( d[0] ) data ){ ret += square::merge( data.first, data.second, data.first ); } );
 	}
 	else if ( dir == right )
 	{
@@ -267,7 +271,7 @@ void core_2048::move(core_2048::direction dir, bool add_new)
 		std::for_each(
 					d.begin( ),
 					d.end( ),
-					[]( decltype( d[0] ) data ){ square::merge( data.first, data.second, data.first ); } );
+					[&]( decltype( d[0] ) data ){ ret += square::merge( data.first, data.second, data.first ); } );
 	}
 	else if ( dir == up )
 	{
@@ -275,7 +279,7 @@ void core_2048::move(core_2048::direction dir, bool add_new)
 		std::for_each(
 					d.begin( ),
 					d.end( ),
-					[]( decltype( d[0] ) data ){ square::merge( data.first, data.second, data.first ); } );
+					[&]( decltype( d[0] ) data ){ ret += square::merge( data.first, data.second, data.first ); } );
 	}
 	else
 	{
@@ -284,9 +288,10 @@ void core_2048::move(core_2048::direction dir, bool add_new)
 		std::for_each(
 					d.begin( ),
 					d.end( ),
-					[]( decltype( d[0] ) data ){ square::merge( data.first, data.second, data.first ); } );
+					[&]( decltype( d[0] ) data ){ ret += square::merge( data.first, data.second, data.first ); } );
 	}
 	if ( add_new ) { random_add( ); }
+	score += ret;
 }
 
 bool core_2048::can_move() const { return can_move( up ) || can_move( down ) || can_move( left ) || can_move( right ); }

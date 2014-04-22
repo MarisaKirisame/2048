@@ -14,6 +14,9 @@ void MainWindow::keyPressEvent( QKeyEvent * event )
 	else if( event->key( ) == Qt::Key_Right )
 	{ if ( data->can_move( core_2048::right ) ) { data->move( core_2048::right ); } }
 	update_value( );
+	ui->statusbar->showMessage(
+				QString( "Score:" ) +
+				QString( std::to_string( data->score ).c_str( ) ) );
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -22,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	data( new core_2048 )
 {
 	ui->setupUi(this);
+	data->random_add( );
+	update_value( );
 }
 
 MainWindow::~MainWindow()
@@ -29,30 +34,30 @@ MainWindow::~MainWindow()
 	delete ui;
 	delete data;
 }
-#include <QLCDNumber>
-std::vector< QLCDNumber *> MainWindow::display( )
+#include <QLabel>
+std::vector< QLabel *> MainWindow::display( )
 {
-	return std::vector< QLCDNumber * >(
+	return std::vector< QLabel * >(
 	{
-		ui->lcdNumber,
-		ui->lcdNumber_2,
-		ui->lcdNumber_3,
-		ui->lcdNumber_4,
-		ui->lcdNumber_5,
-		ui->lcdNumber_6,
-		ui->lcdNumber_7,
-		ui->lcdNumber_8,
-		ui->lcdNumber_9,
-		ui->lcdNumber_10,
-		ui->lcdNumber_11,
-		ui->lcdNumber_12,
-		ui->lcdNumber_13,
-		ui->lcdNumber_14,
-		ui->lcdNumber_15,
-		ui->lcdNumber_16
+		ui->label,
+		ui->label_2,
+		ui->label_3,
+		ui->label_4,
+		ui->label_5,
+		ui->label_6,
+		ui->label_7,
+		ui->label_8,
+		ui->label_9,
+		ui->label_10,
+		ui->label_11,
+		ui->label_12,
+		ui->label_13,
+		ui->label_14,
+		ui->label_15,
+		ui->label_16
 	} );
 }
-
+#include <QPicture>
 void MainWindow::update_value()
 {
 	auto r = display( );
@@ -64,7 +69,25 @@ void MainWindow::update_value()
 				end,
 				[&](square & s)
 	{
-		(*ri)->display( static_cast< int >( s ) );
+		(*ri)->setPixmap( getPicture( s ) );
 		++ri;
 	} );
+}
+#include <QPixmap>
+QPixmap & MainWindow::getPicture( const square & s )
+{
+	static std::map< size_t, QPixmap > map;
+	auto it = map.find( s );
+	if ( it == map.end( ) )
+	{
+		auto ret = map.insert(
+								 std::make_pair(
+									 s,
+									 QPixmap(
+										 QString( "../Q2048/" ) +
+										 QString( std::to_string( s ).c_str( ) ) +
+										 QString( ".png" ) ).scaled( 128, 128 ) ) );
+		return ret.first->second;
+	}
+	else { return it->second; }
 }

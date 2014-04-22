@@ -52,7 +52,7 @@ struct square
 	static bool can_merge( iterator begin, iterator end );
 	bool operator == ( const square & comp ) { return num == comp.num; }
 	template< typename iiterator, typename oiterator >
-	static void merge( iiterator ibegin, iiterator iend, oiterator obegin );
+	static size_t merge( iiterator ibegin, iiterator iend, oiterator obegin );
 	square( );
 	explicit square( size_t num );
 };
@@ -222,5 +222,6 @@ struct core_2048
 	bool can_move( direction dir ) const;
 	template< typename O >
 	friend O & operator << ( O & o, const core_2048 & s );
+	size_t score = 0;
 };
 #endif // CORE_2048_HPP

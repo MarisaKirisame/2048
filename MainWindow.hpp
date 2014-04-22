@@ -8,10 +8,12 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <array>
-class QLCDNumber;
+class QLabel;
 namespace Ui { class MainWindow; }
 class core_2048;
 class QKeyEvent;
+class square;
+class QPixmap;
 struct Q2048SHARED_EXPORT MainWindow : QMainWindow
 {
 	Q_OBJECT
@@ -20,9 +22,10 @@ public:
 	explicit MainWindow( QWidget * parent = 0 );
 	~MainWindow( );
 	Ui::MainWindow *ui;
-	std::vector< QLCDNumber * > display( );
+	std::vector< QLabel * > display( );
 	void update_value( );
 	core_2048 * data;
+	static QPixmap & getPicture( const square & );
 };
 
 #endif // MAINWINDOW_HPP

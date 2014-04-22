@@ -20,3 +20,4 @@
 *.out
 *.app
 *.pro.user
+.directory
