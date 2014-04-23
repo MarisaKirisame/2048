@@ -8,6 +8,7 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <array>
+class Dialog;
 class QLabel;
 namespace Ui { class MainWindow; }
 class core_2048;
@@ -26,6 +27,10 @@ public:
 	void update_value( );
 	core_2048 * data;
 	static QPixmap & getPicture( const square & );
+	Dialog * dlg;
+private slots:
+	void on_actionRestart_triggered();
+	void on_actionHowTo_triggered();
 };
 
 #endif // MAINWINDOW_HPP

@@ -13,12 +13,14 @@ DEFINES += Q2048_LIBRARY
 
 SOURCES += Q2048.cpp \
     MainWindow.cpp \
-    core_2048.cpp
+    core_2048.cpp \
+    Dialog.cpp
 
 HEADERS += Q2048.hpp\
         q2048_global.hpp \
     MainWindow.hpp \
-    core_2048.hpp
+    core_2048.hpp \
+    Dialog.hpp
     core_2048.hpp
 
 unix {
@@ -27,7 +29,8 @@ unix {
 }
 
 FORMS += \
-    MainWindow.ui
+    MainWindow.ui \
+    Dialog.ui
 QMAKE_CXXFLAGS += -std=c++1y
 
 RESOURCES +=

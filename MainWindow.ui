@@ -436,8 +436,32 @@
      <height>19</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuRestart">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="actionRestart"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionHowTo"/>
+   </widget>
+   <addaction name="menuRestart"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionRestart">
+   <property name="text">
+    <string>Restart</string>
+   </property>
+  </action>
+  <action name="actionHowTo">
+   <property name="text">
+    <string>HowTo</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

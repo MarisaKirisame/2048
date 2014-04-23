@@ -3,6 +3,7 @@
 #include "boost/range/as_literal.hpp"
 #include "core_2048.hpp"
 #include <QKeyEvent>
+#include <Dialog.hpp>
 void MainWindow::keyPressEvent( QKeyEvent * event )
 {
 	if( event->key( ) == Qt::Key_Up )
@@ -22,7 +23,8 @@ void MainWindow::keyPressEvent( QKeyEvent * event )
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui( new Ui::MainWindow ),
-	data( new core_2048 )
+	data( new core_2048 ),
+	dlg( new Dialog )
 {
 	ui->setupUi(this);
 	data->random_add( );
@@ -33,6 +35,7 @@ MainWindow::~MainWindow()
 {
 	delete ui;
 	delete data;
+	delete dlg;
 }
 #include <QLabel>
 std::vector< QLabel *> MainWindow::display( )
@@ -90,4 +93,17 @@ QPixmap & MainWindow::getPicture( const square & s )
 		return ret.first->second;
 	}
 	else { return it->second; }
+}
+
+void MainWindow::on_actionRestart_triggered( )
+{
+	delete data;
+	data = new core_2048;
+	data->random_add( );
+	update_value( );
+}
+
+void MainWindow::on_actionHowTo_triggered()
+{
+		dlg->show( );
 }
