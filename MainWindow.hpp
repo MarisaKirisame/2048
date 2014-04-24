@@ -32,10 +32,12 @@ public:
 	Dialog * dlg;
 	void try_move( core_2048::direction dir );
 	std::string picture_path;
+	int sleep_for_miliseconds = 0;
 private slots:
 	void on_actionRestart_triggered();
 	void on_actionHowTo_triggered();
 	void on_actionAuto_triggered();
+	void on_actionDelayBetweenMove_triggered();
 };
 
 #endif // MAINWINDOW_HPP

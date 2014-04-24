@@ -115,11 +115,14 @@ void MainWindow::on_actionHowTo_triggered()
 {
 		dlg->show( );
 }
-
+#include <chrono>
+#include <thread>
+#include <QInputDialog>
 void MainWindow::on_actionAuto_triggered()
 {
 	while( data->can_move( ) )
 	{
+		std::this_thread::sleep_for( std::chrono::milliseconds( sleep_for_miliseconds ) );
 		auto ret = data->all_next_move( );
 		assert( ! ret.empty( ) );
 		std::vector< std::vector< core_2048 > > next_board;
@@ -144,4 +147,15 @@ void MainWindow::on_actionAuto_triggered()
 		} );
 		try_move( ret[ std::distance( evaluate.begin( ), std::max_element( evaluate.begin( ), evaluate.end( ) ) ) ] );
 	}
+}
+
+void MainWindow::on_actionDelayBetweenMove_triggered()
+{
+	sleep_for_miliseconds =
+			QInputDialog::getDouble(
+				this,
+				"Enter Delay",
+				"Delay(s):",
+				static_cast< double >( sleep_for_miliseconds ) / 1000 ) *
+			1000;
 }

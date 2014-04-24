@@ -453,6 +453,7 @@
      <string>AI</string>
     </property>
     <addaction name="actionAuto"/>
+    <addaction name="actionDelayBetweenMove"/>
    </widget>
    <addaction name="menuRestart"/>
    <addaction name="menuHelp"/>
@@ -472,6 +473,11 @@
   <action name="actionAuto">
    <property name="text">
     <string>Auto</string>
+   </property>
+  </action>
+  <action name="actionDelayBetweenMove">
+   <property name="text">
+    <string>DelayBetweenMove</string>
    </property>
   </action>
  </widget>
