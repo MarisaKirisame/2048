@@ -166,12 +166,18 @@ core_2048::crange_type core_2048::crange( ) const
 				boost::make_iterator_range( data[2].begin( ), data[2].end( ) ),
 				boost::make_iterator_range( data[3].begin( ), data[3].end( ) )
 			)
-		);
+			);
 }
+
+core_2048::crange_type core_2048::range() const { return crange( ); }
 
 core_2048::iterator core_2048::begin() { return range( ).begin( ); }
 
 core_2048::iterator core_2048::end() { return range( ).end( ); }
+
+core_2048::const_iterator core_2048::begin() const { return range( ).begin( ); }
+
+core_2048::const_iterator core_2048::end() const { return range( ).end( ); }
 
 core_2048::reverse_iterator core_2048::rbegin() { return boost::rbegin( range( ) ); }
 
@@ -179,10 +185,9 @@ core_2048::reverse_iterator core_2048::rend() { return boost::rend( range( ) ); 
 
 void core_2048::random_add()
 {
-	auto pred = []( square & s ){ return s.empty( ); };
-	auto i_begin = boost::make_filter_iterator( pred, begin( ), end( ) );
-	auto i_end = boost::make_filter_iterator( pred, end( ), end( ) );
 	std::random_device rd;
+	auto i_begin = empty_begin( );
+	auto i_end = empty_end( );
 	for ( auto distance = std::distance( i_begin, i_end );i_begin != i_end; ++i_begin )
 	{
 		if ( std::uniform_real_distribution<>( )( rd ) <= 1 / static_cast< double >( distance ) )
@@ -194,13 +199,21 @@ void core_2048::random_add()
 	}
 }
 
+core_2048::const_empty_square_iterator_type core_2048::empty_begin() const { return boost::make_filter_iterator( empty_pred, begin( ), end( ) ); }
+
+core_2048::const_empty_square_iterator_type core_2048::empty_end() const { return boost::make_filter_iterator( empty_pred, end( ), end( ) ); }
+
+core_2048::empty_square_iterator_type core_2048::empty_begin() { return boost::make_filter_iterator( empty_pred, begin( ), end( ) ); }
+
+core_2048::empty_square_iterator_type core_2048::empty_end() { return boost::make_filter_iterator( empty_pred, end( ), end( ) ); }
+
 core_2048::cleft_to_right_type core_2048::left_to_right() const
 {
 	cleft_to_right_type ret;
 	std::transform
-	(
-		data.cbegin( ),
-		data.cend( ),
+			(
+				data.cbegin( ),
+				data.cend( ),
 		std::back_inserter( ret ),
 		[]( decltype( data[0] ) data ){ return std::make_pair( data.cbegin( ), data.cend( ) ); }
 	);
@@ -294,7 +307,7 @@ void core_2048::move(core_2048::direction dir, bool add_new)
 	score += ret;
 }
 
-bool core_2048::can_move() const { return can_move( up ) || can_move( down ) || can_move( left ) || can_move( right ); }
+bool core_2048::can_move( ) const { return can_move( up ) || can_move( down ) || can_move( left ) || can_move( right ); }
 
 bool core_2048::can_move(core_2048::direction dir) const
 {
@@ -332,6 +345,46 @@ bool core_2048::can_move(core_2048::direction dir) const
 					[]( decltype( d[0] ) data ){ return square::can_merge( data.first, data.second ); } ) != d.end( );
 	}
 }
+
+std::vector<core_2048::direction> core_2048::all_next_move() const
+{
+	std::vector< direction > ret;
+	for( direction i : { up, left, down, right } )
+	{
+		if ( can_move( i ) )
+		{ ret.push_back( i ); }
+	}
+	return ret;
+}
+
+std::vector<core_2048> core_2048::make_move( core_2048::direction dir ) const
+{
+	core_2048 next = *this;
+	next.move( dir, false );
+	return next.generate_random_add( );
+}
+
+std::vector<core_2048> core_2048::generate_random_add() const
+{
+	std::vector<core_2048> ret;
+	auto beg =  empty_begin( );
+	auto end = empty_end( );
+	for ( ; beg != end; ++beg )
+	{
+		ret.push_back( add( 2, beg ) );
+		ret.push_back( add( 4, beg ) );
+	}
+	return ret;
+}
+
+core_2048 core_2048::add(size_t, core_2048::const_empty_square_iterator_type ii ) const
+{
+	core_2048 ret( * this );
+	auto i = ret.empty_begin( );
+	std::advance( i, std::distance( empty_begin( ), ii ) );
+	return ret;
+}
+
 template< typename O >
 O & operator <<(O & o, const core_2048 & s)
 {

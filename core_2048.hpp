@@ -95,16 +95,34 @@ struct core_2048
 	)
 	crange_type;
 	crange_type crange( ) const;
+	crange_type range( ) const;
 	typedef decltype( ( static_cast< range_type * >( nullptr ) )->begin( ) ) iterator;
 	typedef decltype( ( static_cast< crange_type * >( nullptr )->begin( ) ) ) const_iterator;
 	typedef decltype( boost::rbegin( * static_cast< crange_type * >( nullptr ) ) ) const_reverse_iterator;
 	iterator begin( );
 	iterator end( );
+	const_iterator begin( ) const;
+	const_iterator end( ) const;
 	typedef decltype( boost::rbegin( * static_cast< range_type * >( nullptr ) ) ) reverse_iterator;
 	reverse_iterator rbegin( );
 	reverse_iterator rend( );
 	enum direction { left, right, up, down };
 	void random_add( );
+	static bool empty_pred( const square & s ) { return s.empty( ); }
+	typedef decltype(
+			boost::make_filter_iterator(
+				empty_pred,
+				* static_cast< const_iterator * >( nullptr ),
+				* static_cast< const_iterator * >( nullptr ) ) ) const_empty_square_iterator_type;
+	typedef decltype(
+			boost::make_filter_iterator(
+				empty_pred,
+				* static_cast< iterator * >( nullptr ),
+				* static_cast< iterator * >( nullptr ) ) ) empty_square_iterator_type;
+	const_empty_square_iterator_type empty_begin( ) const;
+	const_empty_square_iterator_type empty_end( ) const;
+	empty_square_iterator_type empty_begin( );
+	empty_square_iterator_type empty_end( ) ;
 	typedef std::vector
 	<
 		std::pair
@@ -223,5 +241,9 @@ struct core_2048
 	template< typename O >
 	friend O & operator << ( O & o, const core_2048 & s );
 	size_t score = 0;
+	std::vector< direction > all_next_move( ) const;
+	std::vector< core_2048 > make_move( direction ) const;
+	std::vector< core_2048 > generate_random_add( ) const;
+	core_2048 add( size_t, const_empty_square_iterator_type ) const;
 };
 #endif // CORE_2048_HPP

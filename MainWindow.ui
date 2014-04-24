@@ -448,8 +448,15 @@
     </property>
     <addaction name="actionHowTo"/>
    </widget>
+   <widget class="QMenu" name="menuAI">
+    <property name="title">
+     <string>AI</string>
+    </property>
+    <addaction name="actionAuto"/>
+   </widget>
    <addaction name="menuRestart"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuAI"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionRestart">
@@ -460,6 +467,11 @@
   <action name="actionHowTo">
    <property name="text">
     <string>HowTo</string>
+   </property>
+  </action>
+  <action name="actionAuto">
+   <property name="text">
+    <string>Auto</string>
    </property>
   </action>
  </widget>
