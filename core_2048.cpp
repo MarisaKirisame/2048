@@ -391,6 +391,25 @@ core_2048 core_2048::add(size_t, core_2048::const_empty_square_iterator_type ii 
 
 size_t core_2048::empty_square_count() const { return std::count_if( begin(), end(), empty_pred ); }
 
+square core_2048::largest_square() const { return * std::max_element( begin( ), end( ) ); }
+
+bool core_2048::largest_on_edge() const
+{
+	auto res = largest_square( );
+	return
+			res == data[0][1] || res == data[0][2] ||
+			res == data[1][0] || res == data[2][0] ||
+			res == data[2][0] || res == data[2][2] ||
+			res == data[3][1] || res == data[3][2] ||
+			largest_on_corner( );
+}
+
+bool core_2048::largest_on_corner() const
+{
+	auto res = largest_square( );
+	return res == data[0][0] || res == data[0][3] || res == data[3][0] || res == data[3][3];
+}
+
 template< typename O >
 O & operator <<(O & o, const core_2048 & s)
 {

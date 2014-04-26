@@ -454,6 +454,9 @@
     </property>
     <addaction name="actionAuto"/>
     <addaction name="actionDelayBetweenMove"/>
+    <addaction name="actionTrain"/>
+    <addaction name="actionSearchDepth"/>
+    <addaction name="actionLearnRate"/>
    </widget>
    <addaction name="menuRestart"/>
    <addaction name="menuHelp"/>
@@ -478,6 +481,21 @@
   <action name="actionDelayBetweenMove">
    <property name="text">
     <string>DelayBetweenMove</string>
+   </property>
+  </action>
+  <action name="actionTrain">
+   <property name="text">
+    <string>Train</string>
+   </property>
+  </action>
+  <action name="actionSearchDepth">
+   <property name="text">
+    <string>SearchDepth</string>
+   </property>
+  </action>
+  <action name="actionLearnRate">
+   <property name="text">
+    <string>LearnRate</string>
    </property>
   </action>
  </widget>

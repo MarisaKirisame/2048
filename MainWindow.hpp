@@ -27,7 +27,7 @@ public:
 	void auto_minmax_square( int depth );
 	Ui::MainWindow *ui;
 	std::vector< QLabel * > display( );
-	void update_value( );
+	void update( );
 	core_2048 * data;
 	QPixmap & getPicture( const square & );
 	Dialog * dlg;
@@ -45,12 +45,33 @@ public:
 	double upright_corner_empty_value = 10;
 	double downleft_corner_empty_value = 10;
 	double downright_corner_empty_value = 10;
-	void update_factor_weight( double learn_rate, const core_2048 & next_step );
+	double largest_on_00_value = 10;
+	double largest_on_01_value = 10;
+	double largest_on_02_value = 10;
+	double largest_on_03_value = 10;
+	double largest_on_10_value = 10;
+	double largest_on_11_value = 10;
+	double largest_on_12_value = 10;
+	double largest_on_13_value = 10;
+	double largest_on_20_value = 10;
+	double largest_on_21_value = 10;
+	double largest_on_22_value = 10;
+	double largest_on_23_value = 10;
+	double largest_on_30_value = 10;
+	double largest_on_31_value = 10;
+	double largest_on_32_value = 10;
+	double largest_on_33_value = 10;
+	double learn_rate = 0;
+	size_t search_depth = 0;
+	void update_factor_weight( const core_2048 & next_step );
 private slots:
 	void on_actionRestart_triggered();
 	void on_actionHowTo_triggered();
 	void on_actionAuto_triggered();
 	void on_actionDelayBetweenMove_triggered();
+	void on_actionTrain_triggered();
+	void on_actionSearchDepth_triggered();
+	void on_actionLearnRate_triggered();
 };
 
 #endif // MAINWINDOW_HPP

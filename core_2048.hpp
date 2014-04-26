@@ -248,5 +248,8 @@ struct core_2048
 	std::vector< core_2048 > generate_random_add( ) const;
 	core_2048 add( size_t, const_empty_square_iterator_type ) const;
 	size_t empty_square_count( ) const;
+	square largest_square( ) const;
+	bool largest_on_edge( ) const;
+	bool largest_on_corner( ) const;
 };
 #endif // CORE_2048_HPP
