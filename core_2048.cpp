@@ -175,6 +175,10 @@ core_2048::iterator core_2048::begin() { return range( ).begin( ); }
 
 core_2048::iterator core_2048::end() { return range( ).end( ); }
 
+core_2048::const_iterator core_2048::cbegin() const { return begin(); }
+
+core_2048::const_iterator core_2048::cend() const { return end(); }
+
 core_2048::const_iterator core_2048::begin() const { return range( ).begin( ); }
 
 core_2048::const_iterator core_2048::end() const { return range( ).end( ); }
@@ -384,6 +388,8 @@ core_2048 core_2048::add(size_t, core_2048::const_empty_square_iterator_type ii 
 	std::advance( i, std::distance( empty_begin( ), ii ) );
 	return ret;
 }
+
+size_t core_2048::empty_square_count() const { return std::count_if( begin(), end(), empty_pred ); }
 
 template< typename O >
 O & operator <<(O & o, const core_2048 & s)

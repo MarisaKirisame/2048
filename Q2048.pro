@@ -31,6 +31,6 @@ unix {
 FORMS += \
     MainWindow.ui \
     Dialog.ui
-QMAKE_CXXFLAGS += -std=c++1y
+QMAKE_CXXFLAGS += -std=c++0x
 
 RESOURCES +=

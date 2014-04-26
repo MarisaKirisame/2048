@@ -11,9 +11,9 @@ template< typename iterator, size_t skip_size >
 struct skipping_iterator : std::iterator< std::random_access_iterator_tag, typename std::iterator_traits< iterator >::value_type >
 {
 	template< typename i >
-	static auto arrow( i ii ) { return ii.operator->( ); }
+	static decltype( ( * static_cast< i * >( nullptr ) ).operator->( ) ) arrow( i ii ) { return ii.operator->( ); }
 	template< typename i >
-	static auto arrow( i * ii ) { return ii; }
+	static i arrow( i * ii ) { return ii; }
 	iterator current;
 	typedef decltype( * current ) elem_type;
 	size_t distance_to_end;
@@ -101,6 +101,8 @@ struct core_2048
 	typedef decltype( boost::rbegin( * static_cast< crange_type * >( nullptr ) ) ) const_reverse_iterator;
 	iterator begin( );
 	iterator end( );
+	const_iterator cbegin( ) const;
+	const_iterator cend( ) const;
 	const_iterator begin( ) const;
 	const_iterator end( ) const;
 	typedef decltype( boost::rbegin( * static_cast< range_type * >( nullptr ) ) ) reverse_iterator;
@@ -245,5 +247,6 @@ struct core_2048
 	std::vector< core_2048 > make_move( direction ) const;
 	std::vector< core_2048 > generate_random_add( ) const;
 	core_2048 add( size_t, const_empty_square_iterator_type ) const;
+	size_t empty_square_count( ) const;
 };
 #endif // CORE_2048_HPP
