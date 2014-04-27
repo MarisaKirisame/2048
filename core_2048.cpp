@@ -189,6 +189,7 @@ core_2048::reverse_iterator core_2048::rend() { return boost::rend( range( ) ); 
 
 void core_2048::random_add()
 {
+	largest_square_cache.reset( );
 	std::random_device rd;
 	auto i_begin = empty_begin( );
 	auto i_end = empty_end( );
@@ -273,6 +274,7 @@ core_2048::cdown_to_up_type core_2048::down_to_up() const
 
 void core_2048::move(core_2048::direction dir, bool add_new)
 {
+	largest_square_cache.reset( );
 	size_t ret = 0;
 	if ( dir == left )
 	{
@@ -388,10 +390,14 @@ core_2048 core_2048::add(size_t, core_2048::const_empty_square_iterator_type ii 
 	std::advance( i, std::distance( empty_begin( ), ii ) );
 	return ret;
 }
-
 size_t core_2048::empty_square_count() const { return std::count_if( begin(), end(), empty_pred ); }
 
-square core_2048::largest_square() const { return * std::max_element( begin( ), end( ) ); }
+square core_2048::largest_square() const
+{
+	if ( largest_square_cache.get( ) == nullptr )
+	{ largest_square_cache = std::make_shared< square >( * std::max_element( begin( ), end( ) ) ); }
+	return * largest_square_cache;
+}
 
 bool core_2048::largest_on_edge() const
 {

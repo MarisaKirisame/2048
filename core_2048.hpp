@@ -5,6 +5,7 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/range/join.hpp>
 #include <boost/iterator/filter_iterator.hpp>
+#include <memory>
 template< typename t >
 t construct( );
 template< typename iterator, size_t skip_size >
@@ -251,5 +252,6 @@ struct core_2048
 	square largest_square( ) const;
 	bool largest_on_edge( ) const;
 	bool largest_on_corner( ) const;
+	mutable std::shared_ptr< square > largest_square_cache;
 };
 #endif // CORE_2048_HPP

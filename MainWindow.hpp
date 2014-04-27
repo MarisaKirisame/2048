@@ -8,6 +8,8 @@
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <array>
+#include <functional>
+#include <vector>
 #include "core_2048.hpp"
 class Dialog;
 class QLabel;
@@ -36,34 +38,14 @@ public:
 	int sleep_for_miliseconds = 0;
 	double evaluate_positsion_minmax( const core_2048 & c, size_t depth ) const;
 	double evaluate_positsion( const core_2048 & c ) const;
-	double empty_square_value = 10;
-	double can_move_up_value = 10;
-	double can_move_down_value = 10;
-	double can_move_right_value = 10;
-	double can_move_left_value = 10;
-	double upleft_corner_empty_value = 10;
-	double upright_corner_empty_value = 10;
-	double downleft_corner_empty_value = 10;
-	double downright_corner_empty_value = 10;
-	double largest_on_00_value = 10;
-	double largest_on_01_value = 10;
-	double largest_on_02_value = 10;
-	double largest_on_03_value = 10;
-	double largest_on_10_value = 10;
-	double largest_on_11_value = 10;
-	double largest_on_12_value = 10;
-	double largest_on_13_value = 10;
-	double largest_on_20_value = 10;
-	double largest_on_21_value = 10;
-	double largest_on_22_value = 10;
-	double largest_on_23_value = 10;
-	double largest_on_30_value = 10;
-	double largest_on_31_value = 10;
-	double largest_on_32_value = 10;
-	double largest_on_33_value = 10;
 	double learn_rate = 0;
 	size_t search_depth = 0;
 	void update_factor_weight( const core_2048 & next_step );
+	void update_factor_weight( core_2048::direction dir );
+	std::vector< std::pair< std::function< double ( const core_2048 & ) >, std::pair< double, double > > > evaluation;
+	void add_evaluation( std::function< double ( const core_2048 & ) > && );
+	void add_evaluation( const std::function< double ( const core_2048 & ) > & );
+	double inital_weight = 10;
 private slots:
 	void on_actionRestart_triggered();
 	void on_actionHowTo_triggered();
