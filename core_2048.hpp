@@ -6,6 +6,7 @@
 #include <boost/range/join.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <memory>
+#include <square.hpp>
 template< typename t >
 t construct( );
 template< typename iterator, size_t skip_size >
@@ -43,20 +44,6 @@ struct skipping_iterator : std::iterator< std::random_access_iterator_tag, typen
 	static void split( it begin, it end, op out );
 };
 
-struct square
-{
-	square & operator ++ ( ) { ++num; return * this; }
-	size_t num;
-	bool empty( ) const { return num == 0; }
-	operator size_t( ) const { return num == 0 ? 0 : std::pow( 2, num ); }
-	template< typename iterator >
-	static bool can_merge( iterator begin, iterator end );
-	bool operator == ( const square & comp ) { return num == comp.num; }
-	template< typename iiterator, typename oiterator >
-	static size_t merge( iiterator ibegin, iiterator iend, oiterator obegin );
-	square( );
-	explicit square( size_t num );
-};
 struct core_2048
 {
 	core_2048( ) { }
@@ -253,5 +240,6 @@ struct core_2048
 	bool largest_on_edge( ) const;
 	bool largest_on_corner( ) const;
 	mutable std::shared_ptr< square > largest_square_cache;
+	size_t count( size_t ) const;
 };
 #endif // CORE_2048_HPP

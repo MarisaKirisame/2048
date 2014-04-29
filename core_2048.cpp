@@ -76,18 +76,6 @@ void skipping_iterator< iterator, skip_size >::split( it begin, it end, op out )
 		return std::make_pair( ret, skipping_iterator< it, n >( begin, 0 ) );
 	} );
 }
-template< typename iterator >
-bool square::can_merge(iterator begin, iterator end)
-{
-	if ( std::distance( begin, end ) <= 1 ) { return false; }
-	else
-	{
-		auto second = begin;
-		++second;
-		if ( ( begin->num != 0 && second->num == 0 ) || ( begin->num != 0 && begin->num == second->num ) ) { return true; }
-		else { return can_merge( second, end ); }
-	}
-}
 template< typename iiterator, typename oiterator >
 size_t square::merge(iiterator ibegin, iiterator iend, oiterator obegin)
 {
@@ -127,10 +115,6 @@ size_t square::merge(iiterator ibegin, iiterator iend, oiterator obegin)
 	return retu;
 }
 
-square::square() : square( 0 ) { }
-
-
-square::square(size_t num) : num( num ) { }
 
 core_2048::range_type core_2048::range( )
 {
@@ -355,7 +339,7 @@ bool core_2048::can_move(core_2048::direction dir) const
 std::vector<core_2048::direction> core_2048::all_next_move() const
 {
 	std::vector< direction > ret;
-	for( direction i : { up, left, down, right } )
+	for( direction i : { up, down, right, left } )
 	{
 		if ( can_move( i ) )
 		{ ret.push_back( i ); }
@@ -415,6 +399,8 @@ bool core_2048::largest_on_corner() const
 	auto res = largest_square( );
 	return res == data[0][0] || res == data[0][3] || res == data[3][0] || res == data[3][3];
 }
+
+size_t core_2048::count( size_t s ) const { return std::count( begin( ), end( ), s ); }
 
 template< typename O >
 O & operator <<(O & o, const core_2048 & s)

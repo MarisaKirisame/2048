@@ -25,33 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	data->random_add( );
 	boost::property_tree::ptree pt;
 	boost::property_tree::read_xml( "config.xml", pt );
-	picture_path = pt.get< std::string >( "pictures.path", "/home/jerry/Work/Q2048/TouHou" );
+	picture_path = pt.get< std::string >( "pictures.path" );
 	update( );
-	add_evaluation( []( const core_2048 & c ){ return c.empty_square_count( ); } );
-	for ( size_t i : { 0, 1, 2, 3 } )
-	{
-		for ( size_t j : { 0, 1, 2, 3 } )
-		{
-			for ( size_t z : { 0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072 } )
-			{ add_evaluation( [=]( const core_2048 & c ){ return c.data[i][j] == z; } ); }
-			add_evaluation( [=]( const core_2048 & c ){ return c.largest_square( ) == c.data[i][j]; } );
-			for ( size_t a : { 0, 1, 2, 3 } )
-			{
-				for ( size_t b : { 0, 1, 2, 3 } )
-				{
-					add_evaluation( [=]( const core_2048 & c ){ return c.data[i][j] > c.data[a][b]; } );
-					for ( size_t z : { 0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072 } )
-					{
-						add_evaluation( [=]( const core_2048 & c ){ return c.data[i][j] == c.data[a][b] && c.data[a][b] == z; } );
-					}
-				}
-			}
-		}
-	}
-	for ( core_2048::direction dir : { core_2048::up, core_2048::down, core_2048::left, core_2048::right } )
-	{
-		add_evaluation( [=]( const core_2048 & c ){ return c.can_move( dir ); } );
-	}
 }
 
 MainWindow::~MainWindow()
@@ -59,40 +34,19 @@ MainWindow::~MainWindow()
 	delete ui;
 	delete data;
 	delete dlg;
+	delete p;
 	boost::property_tree::ptree pt;
 	pt.put< std::string >( "pictures.path", picture_path );
 	boost::property_tree::write_xml( "config.xml", pt );
 }
 
-void MainWindow::auto_minmax_square( int depth )
+void MainWindow::auto_minmax_square( )
 {
 	while( data->can_move( ) )
 	{
 		std::this_thread::sleep_for( std::chrono::milliseconds( sleep_for_miliseconds ) );
-		auto ret = data->all_next_move( );
-		assert( ! ret.empty( ) );
-		std::vector< std::vector< core_2048 > > next_board;
-		std::transform(
-					ret.begin( ),
-					ret.end( ),
-					std::back_inserter( next_board ),
-					[this](core_2048::direction dir) { return data->make_move( dir ); } );
-		std::vector< double > evaluate;
-		std::transform(
-					next_board.begin( ),
-					next_board.end( ),
-					std::back_inserter( evaluate ),
-					[&]( const std::vector< core_2048 > & vc )
-		{
-			double result = 0;
-			std::for_each( vc.begin( ), vc.end( ), [&](const core_2048 & c)
-			{
-				result += this->evaluate_positsion_minmax( c, depth );
-			} );
-			return result;
-		} );
-		update_factor_weight( ret[ std::distance( evaluate.begin( ), std::max_element( evaluate.begin( ), evaluate.end( ) ) ) ] );
-		try_move( ret[ std::distance( evaluate.begin( ), std::max_element( evaluate.begin( ), evaluate.end( ) ) ) ] );
+		auto res = p->find_move( * data );
+		try_move( res );
 	}
 }
 #include <QLabel>
@@ -162,75 +116,6 @@ void MainWindow::try_move( core_2048::direction dir )
 	repaint();
 }
 
-double MainWindow::evaluate_positsion_minmax(const core_2048 & c, size_t depth) const
-{
-	if ( depth == 0 ) { return evaluate_positsion( c ); }
-	else
-	{
-		auto ret = data->all_next_move( );
-		assert( ! ret.empty( ) );
-		std::vector< std::vector< core_2048 > > next_board;
-		std::transform(
-					ret.begin( ),
-					ret.end( ),
-					std::back_inserter( next_board ),
-					[this](core_2048::direction dir) { return data->make_move( dir ); } );
-		std::vector< double > evaluate;
-		std::transform(
-					next_board.begin( ),
-					next_board.end( ),
-					std::back_inserter( evaluate ),
-					[&]( const std::vector< core_2048 > & vc )
-		{
-			double result = 0;
-			std::for_each( vc.begin( ), vc.end( ), [&](const core_2048 & c)
-			{
-				result += evaluate_positsion_minmax( c, depth - 1 );
-			} );
-			return result / vc.size( );
-		} );
-		return * std::max_element( evaluate.begin( ), evaluate.end( ) );
-	}
-}
-
-double MainWindow::evaluate_positsion(const core_2048 & c) const
-{
-	return
-			std::accumulate(
-				evaluation.begin( ),
-				evaluation.end( ),
-				c.score,
-				[&]( double d, decltype( evaluation[0] ) f ){ return d + f.first( c ) * ( f.second.first + f.second.second ); } );
-}
-
-void MainWindow::update_factor_weight( const core_2048 & next_step )
-{
-	double difference = evaluate_positsion( * data ) - evaluate_positsion( next_step );
-	if ( difference != 0 )
-	{
-		std::for_each(
-					evaluation.begin( ),
-					evaluation.end( ),
-					[&]( decltype( evaluation[0] ) f )
-		{
-			f.second.first += learn_rate * ( f.first( * data ) - f.first( next_step ) ) * f.second.first / difference;
-			f.second.second -= learn_rate * ( f.first( * data ) - f.first( next_step ) ) * f.second.second / difference;
-		} );
-	}
-}
-
-void MainWindow::update_factor_weight(core_2048::direction dir)
-{
-	auto res = data->make_move( dir );
-	for ( auto & i : res ) { update_factor_weight( i ); }
-}
-
-void MainWindow::add_evaluation( const std::function< double ( const core_2048 & ) > & f )
-{ evaluation.push_back( std::make_pair( f, std::make_pair( inital_weight, -1 * inital_weight ) ) ); }
-
-void MainWindow::add_evaluation( std::function< double ( const core_2048 & ) > && f )
-{ evaluation.push_back( std::make_pair( std::move( f ), std::make_pair( inital_weight, -1 * inital_weight ) ) ); }
-
 void MainWindow::on_actionRestart_triggered( )
 {
 	delete data;
@@ -246,10 +131,7 @@ void MainWindow::on_actionHowTo_triggered()
 #include <chrono>
 #include <QInputDialog>
 
-void MainWindow::on_actionAuto_triggered()
-{
-	auto_minmax_square( search_depth );
-}
+void MainWindow::on_actionAuto_triggered( ) { auto_minmax_square( ); }
 
 void MainWindow::on_actionDelayBetweenMove_triggered()
 {
@@ -281,10 +163,10 @@ void MainWindow::on_actionTrain_triggered()
 
 void MainWindow::on_actionSearchDepth_triggered()
 {
-	search_depth = QInputDialog::getInt( this, "Enter Train Episod", "", search_depth, 0 );
+	p->search_depth = QInputDialog::getInt( this, "Enter Train Episod", "", p->search_depth, 0 );
 }
 
 void MainWindow::on_actionLearnRate_triggered()
 {
-	learn_rate = QInputDialog::getDouble( this, "Enter Learn Rate", "", learn_rate, 0, 1, 10 );
+	p->learn_rate = QInputDialog::getDouble( this, "Enter Learn Rate", "", p->learn_rate, 0, 1, 10 );
 }

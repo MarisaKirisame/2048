@@ -14,13 +14,17 @@ DEFINES += Q2048_LIBRARY
 SOURCES += Q2048.cpp \
     MainWindow.cpp \
     core_2048.cpp \
-    Dialog.cpp
+    Dialog.cpp \
+    player.cpp \
+    square.cpp
 
 HEADERS += Q2048.hpp\
         q2048_global.hpp \
     MainWindow.hpp \
     core_2048.hpp \
-    Dialog.hpp
+    Dialog.hpp \
+    player.hpp \
+    square.hpp
     core_2048.hpp
 
 unix {
